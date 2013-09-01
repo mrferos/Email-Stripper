@@ -6,15 +6,22 @@ use \InvalidArgumentException;
 class EmailStripper
 {
     /**
+     * Take an email message body and strip desired contents
+     * from it
      *
-     *
-     * @param $messageBody
+     * @param string $messageBody
      * @param string|array $whatToStrip
      * @return string
      * @throws \InvalidArgumentException
      */
     public static function strip($messageBody, $whatToStrip)
     {
+        if (!is_string($messageBody))
+            throw new InvalidArgumentException("\$messageBody MUST be a string");
+
+        if (!is_string($whatToStrip) || !is_array($whatToStrip))
+            throw new InvalidArgumentException("Only strings and arrays are supported in \$whatToStrip");
+
         if (is_array($whatToStrip)) {
             foreach ($whatToStrip as $wts)
                 $messageBody = self::strip($messageBody, $wts);
