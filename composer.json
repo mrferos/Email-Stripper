@@ -1,0 +1,14 @@
+{
+    "name": "mrferos/email-stripper",
+    "description": "A library to strip things from email, namely quoted replies and signatures.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andres Galindo",
+            "email": "me@andresgalindo.us"
+        }
+    ],
+    "require": {
+
+    }
+}
