@@ -70,6 +70,7 @@ class QuotedReplies implements StripperInterface
     public function setMessage($message)
     {
         $this->_message = $message;
+        return $this;
     }
 
     /**

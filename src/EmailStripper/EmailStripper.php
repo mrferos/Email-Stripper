@@ -2,6 +2,7 @@
 namespace EmailStripper;
 
 use \InvalidArgumentException;
+use \DomainException;
 
 class EmailStripper
 {
@@ -12,14 +13,15 @@ class EmailStripper
      * @param string $messageBody
      * @param string|array $whatToStrip
      * @return string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws DomainException
      */
     public static function strip($messageBody, $whatToStrip)
     {
         if (!is_string($messageBody))
             throw new InvalidArgumentException("\$messageBody MUST be a string");
 
-        if (!is_string($whatToStrip) || !is_array($whatToStrip))
+        if (!is_string($whatToStrip) && !is_array($whatToStrip))
             throw new InvalidArgumentException("Only strings and arrays are supported in \$whatToStrip");
 
         if (is_array($whatToStrip)) {
@@ -29,9 +31,9 @@ class EmailStripper
             return $messageBody;
         }
 
-        $className = __NAMESPACE__ . '\\Stripper\\' . $whatToStrip;
-        if (!class_exists($whatToStrip))
-            throw new InvalidArgumentException("Unsupported strip '$whatToStrip'. Supported methods are in Stripper/");
+        $className = '\\' . __NAMESPACE__ . '\\Stripper\\' . $whatToStrip;
+        if (!class_exists($className))
+            throw new DomainException("Unsupported strip '$whatToStrip'. Supported methods are in Stripper/");
 
         /** @var $stripper \EmailStripper\Stripper\StripperInterface */
         $stripper = new $className;
