@@ -85,7 +85,7 @@ class QuotedReplies implements StripperInterface
         if (empty($this->_message))
             throw new RuntimeException("A message has not been set");
 
-        return preg_match($this->_regex, $this->_message);
+        return (bool)preg_match($this->_regex, $this->_message);
     }
 
     /**

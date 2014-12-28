@@ -1,43 +1,72 @@
 <?php
 namespace EmailStripper;
 
+use EmailStripper\Stripper\StripperInterface;
 use \InvalidArgumentException;
-use \DomainException;
+use \RuntimeException;
 
 class EmailStripper
 {
     /**
-     * Take an email message body and strip desired contents
-     * from it
-     *
-     * @param string $messageBody
-     * @param string|array $whatToStrip
-     * @return string
-     * @throws InvalidArgumentException
-     * @throws DomainException
+     * @var StripperInterface[]
      */
-    public static function strip($messageBody, $whatToStrip)
+    protected $_stippers = array();
+
+    /**
+     * @param string $message
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @return string
+     */
+    public function strip($message)
     {
-        if (!is_string($messageBody))
-            throw new InvalidArgumentException("\$messageBody MUST be a string");
-
-        if (!is_string($whatToStrip) && !is_array($whatToStrip))
-            throw new InvalidArgumentException("Only strings and arrays are supported in \$whatToStrip");
-
-        if (is_array($whatToStrip)) {
-            foreach ($whatToStrip as $wts)
-                $messageBody = self::strip($messageBody, $wts);
-
-            return $messageBody;
+        if (!is_string($message)) {
+            throw new InvalidArgumentException('$message MUST be a string');
         }
 
-        $className = '\\' . __NAMESPACE__ . '\\Stripper\\' . $whatToStrip;
-        if (!class_exists($className))
-            throw new DomainException("Unsupported strip '$whatToStrip'. Supported methods are in Stripper/");
+        if (empty($this->_stippers)) {
+            throw new RuntimeException('No strippers have been added!');
+        }
 
-        /** @var $stripper \EmailStripper\Stripper\StripperInterface */
-        $stripper = new $className;
-        return $stripper->setMessage($messageBody)
-                        ->strip();
+        foreach ($this->_stippers as $stripper) {
+            $message = $stripper->setMessage($message)->strip();
+        }
+
+        return $message;
+    }
+
+    /**
+     * Accept an object or class name that implements StripperInterface
+     *
+     * @param string|StripperInterface $stripper
+     */
+    public function addStripper($stripper)
+    {
+        if (is_string($stripper)) {
+            if (!class_exists($stripper)) {
+                $stripper = '\\' . __NAMESPACE__ . '\\Stripper\\' . $stripper;
+                if (!class_exists($stripper)) {
+                    throw new \InvalidArgumentException('Class ' . $stripper . ' can not be found');
+                }
+            }
+
+            $stripper = new $stripper;
+            if (!$stripper instanceof StripperInterface) {
+                throw new InvalidArgumentException('Class "' . get_class($stripper) . '" must implement StripperInterface');
+            }
+
+        } elseif (!$stripper instanceof StripperInterface) {
+            throw new InvalidArgumentException('Class "' . get_class($stripper) . '" must implement StripperInterface');
+        }
+
+        $this->_stippers[] = $stripper;
+    }
+
+    /**
+     * @return Stripper\StripperInterface[]
+     */
+    public function getStrippers()
+    {
+        return $this->_stippers;
     }
 }
