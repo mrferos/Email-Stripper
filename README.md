@@ -1,4 +1,5 @@
 ![Travis-CI](https://travis-ci.org/mrferos/Email-Stripper.svg?branch=master)
+![Scrutinizer-CI](https://scrutinizer-ci.com/g/mrferos/Email-Stripper/badges/quality-score.png?b=master)
 
 Email-Stripper
 ==============
