@@ -1,3 +1,5 @@
+![Travis-CI](https://travis-ci.org/mrferos/Email-Stripper.svg?branch=master)
+
 Email-Stripper
 ==============
 
