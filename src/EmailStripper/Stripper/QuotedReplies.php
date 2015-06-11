@@ -3,9 +3,13 @@ namespace EmailStripper\Stripper;
 
 use \RuntimeException;
 
-class QuotedReplies implements StripperInterface
+class QuotedReplies extends AbstractStripper
 {
-    protected $_message;
+    /**
+     * Contains the regular expression used to detect quotes
+     *
+     * @var string
+     */
     protected $_regex;
 
     public function __construct()
@@ -61,16 +65,6 @@ class QuotedReplies implements StripperInterface
         $this->_regex = "~(?i)(?:(?:" . $leadInLine . ")?" .
             "(?:(?:" . $subjectOrAddressLine . ")|(?:" . $dateLine . ")){2,6})|(?:" .
             $gmailQuotedTextBeginning . ")~";
-    }
-
-    /**
-     * @param string $message
-     * @return $this
-     */
-    public function setMessage($message)
-    {
-        $this->_message = $message;
-        return $this;
     }
 
     /**
