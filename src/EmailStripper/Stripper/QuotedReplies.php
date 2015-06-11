@@ -10,7 +10,7 @@ class QuotedReplies extends AbstractStripper
      *
      * @var string
      */
-    protected $_regex;
+    protected $regex;
 
     public function __construct()
     {
@@ -62,7 +62,7 @@ class QuotedReplies extends AbstractStripper
 
 
         /** matches the start of a quoted section of an email */
-        $this->_regex = "~(?i)(?:(?:" . $leadInLine . ")?" .
+        $this->regex = "~(?i)(?:(?:" . $leadInLine . ")?" .
             "(?:(?:" . $subjectOrAddressLine . ")|(?:" . $dateLine . ")){2,6})|(?:" .
             $gmailQuotedTextBeginning . ")~";
     }
@@ -76,10 +76,10 @@ class QuotedReplies extends AbstractStripper
      */
     public function has()
     {
-        if (empty($this->_message))
+        if (empty($this->message))
             throw new RuntimeException("A message has not been set");
 
-        return (bool)preg_match($this->_regex, $this->_message);
+        return (bool)preg_match($this->regex, $this->message);
     }
 
     /**
@@ -90,11 +90,11 @@ class QuotedReplies extends AbstractStripper
      */
     public function strip()
     {
-        if (empty($this->_message))
+        if (empty($this->message))
             throw new RuntimeException("A message has not been set");
 
-        $messageBody = $this->_message;
-        if (preg_match_all($this->_regex, $messageBody, $matches)) {
+        $messageBody = $this->message;
+        if (preg_match_all($this->regex, $messageBody, $matches)) {
             foreach ($matches[0] as $k => $header) {
                 $startPos = strpos($messageBody, $header);
                 $lookAhead = $k+1;

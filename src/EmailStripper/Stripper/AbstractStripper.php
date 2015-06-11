@@ -8,7 +8,7 @@ abstract class AbstractStripper implements StripperInterface
      *
      * @var string
      */
-    protected $_message;
+    protected $message;
 
     /**
      * @param string $message
@@ -16,7 +16,7 @@ abstract class AbstractStripper implements StripperInterface
      */
     public function setMessage($message)
     {
-        $this->_message = $message;
+        $this->message = $message;
         return $this;
     }
 }
